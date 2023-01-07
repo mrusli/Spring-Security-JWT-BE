@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+		<property name="configLocation" value="classpath:hibernate.cfg.xml"></property>
+		<property name="dataSource" ref="dataSourceGlobalHikari"></property>
+    	<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">${hibernate.dialect}</prop>
+				<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+			</props>
+		</property>				
+	</bean>	
+
+	<bean id="dataSourceGlobalHikari" class="com.zaxxer.hikari.HikariDataSource"
+		destroy-method="close">
+		
+		<property name="dataSourceClassName" value="com.mysql.cj.jdbc.MysqlDataSource" />
+        <property name="maximumPoolSize" value="20" />
+        <property name="maxLifetime" value="30000" />
+		<property name="dataSourceProperties">
+			<props>		
+				<prop key="url">${hibernate.connection.url}</prop>
+				<prop key="user">${hibernate.connection.username}</prop>
+				<prop key="password">${hibernate.connection.password}</prop>
+ 			</props>
+		</property>		
+	</bean>
+	
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="ignoreUnresolvablePlaceholders" value="true"></property>
+		<property name="locations">
+			<list>
+				<!-- using hibernate.properties file: -->
+				<!-- <value>classpath:hibernate.properties</value> -->
+				
+				<!-- using external file -->
+				<value>file:/pyramix/hibernate-02.properties</value>
+			</list>
+		</property>
+	</bean>	
+	
+</beans>
